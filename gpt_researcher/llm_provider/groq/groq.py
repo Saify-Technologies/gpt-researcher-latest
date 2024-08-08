@@ -64,6 +64,7 @@ class GroqProvider:
                 paragraph += content
                 if "\n" in paragraph:
                     if websocket is not None:
+                        print(f"{Fore.GREEN}{paragraph}{Style.RESET_ALL}")
                         await websocket.send_json({"type": "report", "output": paragraph})
                     else:
                         print(f"{Fore.GREEN}{paragraph}{Style.RESET_ALL}")
