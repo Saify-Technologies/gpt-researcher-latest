@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "gpt-researcher"
-version = "0.6.4"
+version = "0.8.4"
 description = "GPT Researcher is an autonomous agent designed for comprehensive online research on a variety of tasks."
 authors = ["Assaf Elovic <assaf.elovic@gmail.com>"]
 license = "MIT"
@@ -41,6 +41,16 @@ python-docx = "^1.1.0"
 lxml = { version = ">=4.9.2", extras = ["html_clean"] }
 unstructured = "^0.13.0"
 tiktoken = ">=0.7.0"
+websockets = ">=10.4"
+json_repair = ">=2.3"
+exa_py = ">=0.1"
+langgraph-cli = ">=0.0.29,<0.1"
+weasyprint = ">=52.5"
+json5 = ">=0.9.6"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.1"
+pytest-asyncio = "^0.21.0"
 
 [build-system]
 requires = ["poetry-core"]
