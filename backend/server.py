@@ -99,7 +99,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     docx_path = await write_md_to_word(report, sanitized_filename)
                     # Returning the path of saved report files
                     md_path = await write_text_to_md(report, sanitized_filename)
-                    await websocket.send_json(
+                    websocket.send_json(
                         {
                             "type": "path",
                             "output": {
