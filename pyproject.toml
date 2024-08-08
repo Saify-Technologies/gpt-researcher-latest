@@ -44,7 +44,7 @@ tiktoken = ">=0.7.0"
 websockets = ">=10.4"
 json_repair = ">=0.25.2"
 exa_py = ">=1.0.17"
-langgraph-cli = ">=0.0.29,<0.1"
+langgraph-cli = ">=0.0.69"
 weasyprint = ">=52.5"
 json5 = ">=0.9.6"
 
