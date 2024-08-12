@@ -5,7 +5,7 @@ with open(r"README.md", "r", encoding="utf-8") as f:
 
 setup(
     name="gpt-researcher",
-    version="0.8.4",
+    version="0.8.5",
     description="GPT Researcher is an autonomous agent designed for comprehensive online research on a variety of tasks.",
     package_dir={'gpt_researcher': 'gpt_researcher'},
     packages=find_packages(),

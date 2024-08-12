@@ -1,11 +1,10 @@
 import asyncio
 import json
 import re
+from typing import Dict, List
 
 import json_repair
 import markdown
-
-from typing import List, Dict
 
 from gpt_researcher.master.prompts import *
 from gpt_researcher.scraper.scraper import Scraper
@@ -77,6 +76,38 @@ def get_retriever(retriever):
             retriever = None
 
     return retriever
+
+
+def get_retrievers(headers, cfg):
+    """
+    Determine which retriever(s) to use based on headers, config, or default.
+
+    Args:
+        headers (dict): The headers dictionary
+        cfg (Config): The configuration object
+
+    Returns:
+        list: A list of retriever classes to be used for searching.
+    """
+    # Check headers first for multiple retrievers
+    if headers.get("retrievers"):
+        retrievers = headers.get("retrievers").split(",")
+    # If not found, check headers for a single retriever
+    elif headers.get("retriever"):
+        retrievers = [headers.get("retriever")]
+    # If not in headers, check config for multiple retrievers
+    elif cfg.retrievers:
+        retrievers = cfg.retrievers
+    # If not found, check config for a single retriever
+    elif cfg.retriever:
+        retrievers = [cfg.retriever]
+    # If still not set, use default retriever
+    else:
+        retrievers = [get_default_retriever().__name__]
+
+    # Convert retriever names to actual retriever classes
+    # Use get_default_retriever() as a fallback for any invalid retriever names
+    return [get_retriever(r) or get_default_retriever() for r in retrievers]
 
 
 def get_default_retriever(retriever):
@@ -395,35 +426,9 @@ async def generate_report(
     report = ""
 
     if report_type == "subtopic_report":
-        content = f"{generate_prompt(query, existing_headers, relevant_written_contents, main_topic, context, report_format=cfg.report_format, total_words=cfg.total_words)}"
-        if tone:
-            content += f", tone={tone}"
-        summary = await create_chat_completion(
-            model=cfg.fast_llm_model,
-            messages=[
-                {"role": "system", "content": agent_role_prompt},
-                {"role": "user", "content": content},
-            ],
-            temperature=0,
-            llm_provider=cfg.llm_provider,
-            llm_kwargs=cfg.llm_kwargs,
-            cost_callback=cost_callback,
-        )
+        content = f"{generate_prompt(query, existing_headers, relevant_written_contents, main_topic, context, report_format=cfg.report_format, tone=tone, total_words=cfg.total_words)}"
     else:
-        content = f"{generate_prompt(query, context, report_source, report_format=cfg.report_format, total_words=cfg.total_words)}"
-        if tone:
-            content += f", tone={tone}"
-        summary = await create_chat_completion(
-            model=cfg.fast_llm_model,
-            messages=[
-                {"role": "system", "content": agent_role_prompt},
-                {"role": "user", "content": content},
-            ],
-            temperature=0,
-            llm_provider=cfg.llm_provider,
-            llm_kwargs=cfg.llm_kwargs,
-            cost_callback=cost_callback,
-        )
+        content = f"{generate_prompt(query, context, report_source, report_format=cfg.report_format, tone=tone, total_words=cfg.total_words)}"
     try:
         report = await create_chat_completion(
             model=cfg.smart_llm_model,
